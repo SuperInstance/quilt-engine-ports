@@ -1,0 +1,22 @@
+; Engine configuration file.
+; quilt-engine-ports — Godot reference scaffold.
+; Godot 4.x. Text-only project: no binary assets, everything loads from JSON.
+
+config_version=5
+
+[application]
+
+config/name="quilt-engine-ports (Godot scaffold)"
+run/main_scene="res://scenes/quilt_viewer.tscn"
+config/features=PackedStringArray("4.3", "GL Compatibility")
+config/description="The quilt 5+1 opcodes (BIND/LINK/EFFECT/VIEW/TICK + FORGET) in Godot. Cells as Nodes, TICK as _process, sheets as JSON."
+
+[display]
+
+window/size/viewport_width=1152
+window/size/viewport_height=648
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"

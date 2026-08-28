@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/quilt_engine.gd" id="1_quilt"]
+
+[node name="QuiltViewer" type="Node2D"]
+script = ExtResource("1_quilt")

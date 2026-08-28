@@ -1,0 +1,12 @@
+{
+  "name": "bay-controller",
+  "description": "Demo sheet: a pump bay driven by a (mocked) MHS power channel. The alarm cell flips when power dips below threshold.",
+  "tick_hz_hint": 60,
+  "cells": [
+    { "id": "bay.pump.power",     "kind": "io",      "value": 0.0 },
+    { "id": "bay.pump.threshold", "kind": "value",   "value": 0.7 },
+    { "id": "bay.pump.running",   "kind": "formula", "reads": ["bay.pump.power", "bay.pump.threshold"], "expr": "power >= threshold" },
+    { "id": "bay.alarm",          "kind": "formula", "reads": ["bay.pump.running"], "expr": "not running" },
+    { "id": "bay.uptime",         "kind": "formula", "reads": ["bay.pump.running", "bay.pump.power"], "expr": "if(running, power, 0.0)" }
+  ]
+}
