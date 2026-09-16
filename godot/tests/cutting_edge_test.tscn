@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cutt1ng3dg34c4"]
+
+[ext_resource type="Script" path="res://tests/cutting_edge_test.gd" id="1_cut"]
+
+[node name="CuttingEdgeTest" type="Node"]
+script = ExtResource("1_cut")
