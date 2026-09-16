@@ -53,7 +53,7 @@ func test_route_policy() -> void:
 	check(CuttingEdgeCells.route(42) == CuttingEdgeCells.Substrate.SPARSE_IDX, "int -> SPARSE_IDX")
 	check(CuttingEdgeCells.route(3.14) == CuttingEdgeCells.Substrate.DENSE_VEC, "float -> DENSE_VEC")
 	check(CuttingEdgeCells.route("short") == CuttingEdgeCells.Substrate.HIER_STORE, "short string -> HIER_STORE")
-	check(CuttingEdgeCells.route("a" * 100) == CuttingEdgeCells.Substrate.DENSE_VEC, "long string -> DENSE_VEC")
+	check(CuttingEdgeCells.route("a" + "a".repeat(100)) == CuttingEdgeCells.Substrate.DENSE_VEC, "long string -> DENSE_VEC")
 	check(CuttingEdgeCells.route([1, 2, 3]) == CuttingEdgeCells.Substrate.DENSE_VEC, "array -> DENSE_VEC")
 
 
