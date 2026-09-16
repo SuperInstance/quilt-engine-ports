@@ -20,11 +20,10 @@ extends RefCounted
 ## C and Rust ports.
 
 class_name WorldCell
-extends RefCounted
 
-const FNV_OFFSET: int = 0xcbf29ce484222325
-const FNV_PRIME:  int = 0x100000001b3
-const FNV_SLICE_MUL: int = 0x9e3779b97f4a7c15  # golden ratio
+const FNV_OFFSET: int = -3750763034362895579
+const FNV_PRIME:  int = 1099511628211
+const FNV_SLICE_MUL: int = -7046029254386353131  # golden ratio
 
 enum Op { PROPOSE = 0, EXECUTE = 1, RENDER = 2, VERIFY = 3, REFINE = 4 }
 
@@ -54,8 +53,8 @@ func _init() -> void:
 static func fnv1a64(data: PackedByteArray) -> int:
 	var h: int = FNV_OFFSET
 	for i in range(data.size()):
-		h = (h ^ data[i]) & 0xFFFFFFFFFFFFFFFF
-		h = (h * FNV_PRIME) & 0xFFFFFFFFFFFFFFFF
+		h = (h ^ data[i]) & -1
+		h = (h * FNV_PRIME) & -1
 	return h
 
 
@@ -68,7 +67,7 @@ static func hash_to_32(h: int) -> PackedByteArray:
 	var out := PackedByteArray()
 	out.resize(32)
 	for i in range(4):
-		var slice: int = (h + (i * FNV_SLICE_MUL)) & 0xFFFFFFFFFFFFFFFF
+		var slice: int = (h + (i * FNV_SLICE_MUL)) & -1
 		# Little-endian
 		for j in range(8):
 			out[i * 8 + j] = (slice >> (j * 8)) & 0xFF
@@ -126,7 +125,7 @@ func execute(reads: Array) -> Dictionary:
 			bytes.resize(8)
 			bytes.encode_s64(0, r)
 		h = h ^ fnv1a64(bytes)
-		h = (h * FNV_PRIME) & 0xFFFFFFFFFFFFFFFF
+		h = (h * FNV_PRIME) & -1
 	var value: float = float(h % 100) - 50.0
 	var uncertainty: float = float(h % 10) * 0.1
 	n_execute += 1

@@ -113,10 +113,10 @@ func c4_five_laws_hold(engine) -> void:
 
     # VIEW purity: view() returns the same value on repeated calls and does not mutate
     engine.bind("c4.pure", "value", 42)
-    var v1 = engine.view("c4.pure") if engine.has_method("view") else null
-    var v2 = engine.view("c4.pure") if engine.has_method("view") else null
-    if v1 == v2 and v1 == 42:
-        report("C4.view_purity", true, "view() = 42 twice, no mutation")
+    var v1: Dictionary = engine.view("c4.pure") if engine.has_method("view") else {}
+    var v2: Dictionary = engine.view("c4.pure") if engine.has_method("view") else {}
+    if v1 == v2 and v1.get("c4.pure") == 42:
+        report("C4.view_purity", true, "view() returns Dict {c4.pure: 42} twice, no mutation")
     else:
         report("C4.view_purity", false, "view() diverged: v1=%s v2=%s" % [v1, v2])
 

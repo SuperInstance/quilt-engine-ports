@@ -10,10 +10,9 @@ extends RefCounted
 ## Mirrors the C and Rust polyformalism ports.
 
 class_name CuttingEdgeCells
-extends RefCounted
 
-const FNV_OFFSET: int = 0xcbf29ce484222325
-const FNV_PRIME:  int = 0x100000001b3
+const FNV_OFFSET: int = -3750763034362895579
+const FNV_PRIME:  int = 1099511628211
 
 
 # ──────────────────────────────── FNV-1a
@@ -21,8 +20,8 @@ static func fnv1a64_str(s: String) -> int:
 	var h: int = FNV_OFFSET
 	var bytes := s.to_utf8_buffer()
 	for i in range(bytes.size()):
-		h = (h ^ bytes[i]) & 0xFFFFFFFFFFFFFFFF
-		h = (h * FNV_PRIME) & 0xFFFFFFFFFFFFFFFF
+		h = (h ^ bytes[i]) & -1
+		h = (h * FNV_PRIME) & -1
 	return h
 
 
@@ -51,7 +50,7 @@ class ProofChain:
 	var ring_size: int = 1024
 	var secret: int
 
-	func _init(k: int = 0x12345678ABCDEF) -> void:
+	func _init(k: int = -867530904004197377) -> void:
 		secret = k
 
 	func append(state: int) -> ProofEntry:
@@ -59,9 +58,9 @@ class ProofChain:
 		if entries.size() > 0:
 			prev = entries[-1].new_state
 		# HMAC-style: sig = FNV(state XOR secret) XOR prev
-		var s: int = (state ^ secret) & 0xFFFFFFFFFFFFFFFF
-		s = (s * FNV_PRIME) & 0xFFFFFFFFFFFFFFFF
-		s = (s ^ prev) & 0xFFFFFFFFFFFFFFFF
+		var s: int = (state ^ secret) & -1
+		s = (s * FNV_PRIME) & -1
+		s = (s ^ prev) & -1
 		var e := ProofEntry.new(prev, state, s, secret)
 		entries.append(e)
 		# Ring buffer
@@ -75,9 +74,9 @@ class ProofChain:
 			var prev: ProofEntry = entries[i - 1]
 			if cur.prev_hash != prev.new_state:
 				return false
-			var expected: int = (cur.new_state ^ cur.secret) & 0xFFFFFFFFFFFFFFFF
-			expected = (expected * FNV_PRIME) & 0xFFFFFFFFFFFFFFFF
-			expected = (expected ^ cur.prev_hash) & 0xFFFFFFFFFFFFFFFF
+			var expected: int = (cur.new_state ^ cur.secret) & -1
+			expected = (expected * FNV_PRIME) & -1
+			expected = (expected ^ cur.prev_hash) & -1
 			if cur.sig != expected:
 				return false
 		return true

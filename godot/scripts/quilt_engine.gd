@@ -106,12 +106,29 @@ func _reaches(start: String, target: String) -> bool:
 				stack.push_back(nxt)
 	return false
 
+## link_closure — list all cells reachable from `start` via the dependency graph.
+## Used by the C4.link_transitivity conformance test.
+func link_closure(start: String) -> Array:
+	var out: Array = []
+	var seen := { start: true }
+	var stack: Array = [start]
+	while not stack.is_empty():
+		var cur: String = stack.pop_back()
+		for nxt in _links.get(cur, {}).keys():
+			if not seen.has(nxt):
+				seen[nxt] = true
+				out.push_back(nxt)
+				stack.push_back(nxt)
+	return out
+
 ## ------------------------------------------------------------------ VIEW
 
-func view(ids: Array) -> Dictionary:
+func view(ids) -> Dictionary:
 	## Pure gather. Reads values, mutates nothing.
+	## Accepts either a single id (String) or a list (Array of String).
 	var out := {}
-	for id in ids:
+	var id_list: Array = ids if ids is Array else [ids]
+	for id in id_list:
 		if _cells.has(id):
 			out[id] = _cells[id].value
 	return out
@@ -151,7 +168,7 @@ func tick(_delta: float) -> int:
 
 func _recompute(c: Cell) -> void:
 	_dirty.erase(c.id)
-	var prev := c.value
+	var prev: Variant = c.value
 	if c.kind == "formula":
 		c.value = _eval_formula(c)
 	if c.value != prev:
