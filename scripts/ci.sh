@@ -73,26 +73,34 @@ else
     GODOT_BIN="$HEADLESS_BIN"
 fi
 
-# --- run the test scene ------------------------------------------------
+# --- run all test scenes ----------------------------------------------
 
 echo "=== quilt-engine-ports headless CI ==="
 echo "  Godot:  $GODOT_BIN"
-echo "  Scene:  res://tests/laws_test.tscn"
 echo
 
-# Godot headless run; the test scene exits 0 on pass, 1 on fail.
-# Use --quit-after to bound runtime.
-"$GODOT_BIN" --headless --path "$REPO_ROOT/godot" \
-    res://tests/laws_test.tscn \
-    --quit-after 30 \
-    2>&1 | tee "$REPO_ROOT/.bin/ci.log"
+ALL_PASS=1
+for SCENE in laws_test world_cell_test cutting_edge_test; do
+    echo "--- $SCENE ---"
+    "$GODOT_BIN" --headless --path "$REPO_ROOT/godot" \
+        "res://tests/$SCENE.tscn" \
+        --quit-after 30 \
+        2>&1 | tee -a "$REPO_ROOT/.bin/ci.log"
+    EXIT=$?
+    if [ $EXIT -ne 0 ]; then
+        ALL_PASS=0
+        echo "  -> $SCENE FAIL (exit $EXIT)"
+    else
+        echo "  -> $SCENE PASS"
+    fi
+done
 
-EXIT=$?
-if [ $EXIT -eq 0 ]; then
+if [ $ALL_PASS -eq 1 ]; then
     echo
-    echo "=== CI PASS ==="
+    echo "=== CI PASS (all 3 scenes) ==="
+    exit 0
 else
     echo
-    echo "=== CI FAIL (exit $EXIT) ==="
+    echo "=== CI FAIL ==="
+    exit 1
 fi
-exit $EXIT

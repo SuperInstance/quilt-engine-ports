@@ -65,11 +65,13 @@ func test_crdt_pn_counter() -> void:
 	b.inc("bob", 3)
 	a.merge(b)
 	check(a.value() == 8, "merged PN-Counter = 8")
-	# Convergence: a.merge(b) == b.merge(a)
+	# Convergence: a.merge(b).value == b.merge(a).value
 	var c := CuttingEdgeCells.PNCounter.new()
 	var d := CuttingEdgeCells.PNCounter.new()
 	c.inc("alice", 5)
 	d.inc("bob", 3)
+	# Both sides merge each other (commutativity check)
+	c.merge(d)
 	d.merge(c)
 	check(c.value() == d.value(), "PN-Counter converges")
 

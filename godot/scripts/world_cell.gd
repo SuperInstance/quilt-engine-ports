@@ -126,8 +126,9 @@ func execute(reads: Array) -> Dictionary:
 			bytes.encode_s64(0, r)
 		h = h ^ fnv1a64(bytes)
 		h = (h * FNV_PRIME) & -1
-	var value: float = float(h % 100) - 50.0
-	var uncertainty: float = float(h % 10) * 0.1
+	# abs() because GDScript % preserves sign of dividend and h can be negative (signed 64-bit)
+	var value: float = float(abs(h) % 100) - 50.0
+	var uncertainty: float = float(abs(h) % 10) * 0.1
 	n_execute += 1
 	return {"value": value, "uncertainty": uncertainty, "unit": "?", "verified": verified}
 
