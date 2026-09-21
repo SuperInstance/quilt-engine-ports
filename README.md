@@ -29,6 +29,13 @@ UI that ships with the engine.
   dispatch table and teardown are real; the effect library and grant-tracking
   are the next milestone). **Text files only — written for Godot 4.3, not yet
   run against a Godot binary in CI.** Open it in the editor and press F5.
+- **JEV receipts port** (`godot/scripts/jev_receipts.gd`) — the jev-quilt
+  WAL contract ([JEV-SPEC]): fnv1a-64 over UTF-8 bytes with the
+  `café Δ 日本語 → 0x024a555471370b18d` vector pinned against the Python,
+  Rust, and WASM ports, hash-chained receipts that bind the residue *text*
+  (payload-only edits break replay), and a minimal `JevCell` (integer (k, s)
+  identity, mean-window reading, surprise floor). Conformance: J1–J5 in
+  `godot/tests/jev_receipts_test.gd`, run by `scripts/ci.sh`.
 - **Unity and Unreal** — specified in DESIGN.md (§4, §5), including the
   claim that Unity DOTS/ECS *is* a cell graph re-expressed, and the registry
   discipline Unreal needs for FORGET. Not scaffolded. That's the ladder.
@@ -100,3 +107,4 @@ Apache-2.0.
 [quilt-mhs]: https://github.com/SuperInstance/quilt-mhs
 [quilt-esp32]: https://github.com/SuperInstance/quilt-esp32
 [quilt]: https://github.com/SuperInstance/quilt
+[JEV-SPEC]: https://github.com/SuperInstance/jev-quilt/blob/main/docs/JEV-SPEC.md

@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://c7j3v9r2eceipts1"]
+
+[ext_resource type="Script" path="res://tests/jev_receipts_test.gd" id="1"]
+
+[node name="JevReceiptsTest" type="Node"]
+script = ExtResource("1")

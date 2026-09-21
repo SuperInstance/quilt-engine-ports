@@ -80,16 +80,22 @@ echo "  Godot:  $GODOT_BIN"
 echo
 
 ALL_PASS=1
-for SCENE in laws_test world_cell_test cutting_edge_test; do
+for SCENE in laws_test world_cell_test cutting_edge_test jev_receipts_test; do
     echo "--- $SCENE ---"
+    SCENE_LOG="$REPO_ROOT/.bin/${SCENE}.log"
     "$GODOT_BIN" --headless --path "$REPO_ROOT/godot" \
         "res://tests/$SCENE.tscn" \
         --quit-after 30 \
-        2>&1 | tee -a "$REPO_ROOT/.bin/ci.log"
-    EXIT=$?
+        2>&1 | tee "$SCENE_LOG" | tee -a "$REPO_ROOT/.bin/ci.log"
+    EXIT=${PIPESTATUS[0]}
     if [ $EXIT -ne 0 ]; then
         ALL_PASS=0
         echo "  -> $SCENE FAIL (exit $EXIT)"
+    elif grep -qE "SCRIPT ERROR|Parse Error|Failed to load script" "$SCENE_LOG"; then
+        # Godot exits 0 even when a scene script fails to load — a scene
+        # that never ran must not count as a pass (unchecked = never pass)
+        ALL_PASS=0
+        echo "  -> $SCENE FAIL (script error, vacuous exit 0)"
     else
         echo "  -> $SCENE PASS"
     fi
@@ -97,7 +103,7 @@ done
 
 if [ $ALL_PASS -eq 1 ]; then
     echo
-    echo "=== CI PASS (all 3 scenes) ==="
+    echo "=== CI PASS (all 4 scenes) ==="
     exit 0
 else
     echo
